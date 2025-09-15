@@ -531,42 +531,6 @@ Common error responses:
 }
 ```
 
-## Example Usage
-
-### Using curl
-
-```bash
-# Get token
-curl -X POST -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin123"}' \
-  http://localhost:8000/api/auth/token/
-
-# Get employees with token
-curl -H "Authorization: Token e79233c9203f2e294ae66913aee8c4a5b8e66353" \
-  http://localhost:8000/api/employees/
-
-# Get department analytics
-curl -H "Authorization: Token e79233c9203f2e294ae66913aee8c4a5b8e66353" \
-  http://localhost:8000/api/departments/analytics/
-```
-
-### Using Python requests
-
-```python
-import requests
-
-# Get token
-response = requests.post(
-    'http://localhost:8000/api/auth/token/',
-    json={'username': 'admin', 'password': 'admin123'}
-)
-token = response.json()['token']
-
-# Use token for authenticated requests
-headers = {'Authorization': f'Token {token}'}
-response = requests.get('http://localhost:8000/api/employees/', headers=headers)
-employees = response.json()
-```
 
 ## API Documentation
 
