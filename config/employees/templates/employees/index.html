@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Employee Dashboard</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <h1>Employee Dashboard</h1>
+
+        <div style="display: flex; justify-content: space-around">
+            <div>
+                <h2>Department Analytics</h2>
+                <canvas id="deptChart" width="400" height="400"></canvas>
+            </div>
+            <div>
+                <h2>Attendance Analytics</h2>
+                <canvas id="attendanceChart" width="400" height="400"></canvas>
+            </div>
+        </div>
+
+        <script>
+            // Fetch department data
+            fetch('/api/departments/analytics/', {
+                headers: {
+                    Authorization: 'Token ' + localStorage.getItem('authToken'),
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    const ctx = document
+                        .getElementById('deptChart')
+                        .getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: data.map((dept) => dept.department),
+                            datasets: [
+                                {
+                                    label: 'Employee Count',
+                                    data: data.map(
+                                        (dept) => dept.employee_count,
+                                    ),
+                                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                                    borderColor: 'rgba(54, 162, 235, 1)',
+                                    borderWidth: 1,
+                                },
+                            ],
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                },
+                            },
+                        },
+                    });
+                });
+
+            // Fetch attendance data
+            fetch('/api/attendance/analytics/', {
+                headers: {
+                    Authorization: 'Token ' + localStorage.getItem('authToken'),
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    const ctx = document
+                        .getElementById('attendanceChart')
+                        .getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: data.map((item) => item.date),
+                            datasets: [
+                                {
+                                    label: 'Attendance Rate (%)',
+                                    data: data.map(
+                                        (item) => item.attendance_rate,
+                                    ),
+                                    fill: false,
+                                    borderColor: 'rgb(75, 192, 192)',
+                                    tension: 0.1,
+                                },
+                            ],
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                },
+                            },
+                        },
+                    });
+                });
+        </script>
+    </body>
+</html>
